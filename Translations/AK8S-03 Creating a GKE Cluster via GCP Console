@@ -1,0 +1,29 @@
+// TASK 1 DEPLOY GKE CLUSTERS
+    $ gcloud config set project qwiklabs-gcp-04-20fb2713f1c1
+    $ gcloud set compute/zone us-central1-a
+    $ gcloud container clusters create standard-cluster-1 --num-nodes 3 
+    $ gcloud container clusters get-credentials standard-cluster-1
+    
+    
+//TASK 2 MODIFY GKE CLUSTERS
+  //To view number of nodes, input:
+    $ kubectl get nodes
+    $ gcloud container clusters resize standard-cluster-1 --num-nodes=4
+  //To view increment of nodes, input:
+    $ kubectl get nodes
+
+//TASK 3 DEPLOY A SAMPLE WORKLOAD
+  //To deploy a sample workload:
+    $ kubectl create deployment nginx-1 --image=nginx
+  //Expose the deployment to external traffic to make it accessible to users over the internet:
+    $ kubectl expose deloyment nginx-1 --port=80 --type=LoadBalancer --target-port=8080
+  //To view configuration details:
+    $ kubectl describe deployment nginx-1
+    $ kubectl get pods
+    $ kubectl get services
+    
+//Task 4 VIEW DETAILS ABOUT WORKLOADS IN THE GCP Console
+    $ kubectl get replicasets
+    $ kubectl get deployments
+    // To view YAML configuration file:
+    $ Kubectl config view
