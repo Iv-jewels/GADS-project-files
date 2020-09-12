@@ -1,0 +1,51 @@
+# ESSENTIAL GOOGLE INFRASTRUCTURE: FOUNDATIONS - CREATING VIRTUAL MACHINES
+# Objectives
+# In this lab, you explore the available options for VMs and see the differences between locations.
+# In this lab, you learn how to perform the following tasks:
+# •	Create several standard VMs
+# •	Create advanced VMs
+
+# Task 1: CREATE A UTILITY VIRTUAL MACHINE //
+  $ gcloud beta compute --project=qwiklabs-gcp-00-34317ee12d40 instances create my-vm-1 --zone=us-central1-b --machine-type=f1-micro --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server --image=debian-9-stretch-v20200902 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=my-vm-1 --reservation-affinity=any
+
+  # Explore the VM details
+    $ gcloud config list
+    $ gcloud compute instances describe instance-1
+  # When prompted with 'Did you mean zone [europe-west1-b] for instance: [instance-1] (Y/n)?', type 'y' if the zone is correct, otherwise type 'n'
+  #  A description of instance-1 is displayed
+  #  To access stackdriver logging, input:
+    $ gcloud logging read "timestamp >= \"2020-09-11T21:43:22Z\"  and logName=projects/qwiklabs-gcp-00-34317ee12d40/logs/requests and resource.type=http_load_balancer" --format="csv(httpRequest.remoteIp,httpRequest.requestUrl,timestamp)" --project=qwiklabs-gcp-00-34317ee12d40 
+
+
+# TASK 2: CREATE A WINDOWS VIRTUAL MACHINE
+    $ gcloud beta compute --project=qwiklabs-gcp-00-34317ee12d40 instances create instance-2 --zone=europe-west2-a --machine-type=n1-standard-2 --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=956483595934-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --image=windows-server-2016-dc-core-v20200908 --image-project=windows-cloud --boot-disk-size=100GB --boot-disk-type=pd-ssd --boot-disk-device-name=instance-2 --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
+  # Set firewall rules to allow http and https traffic:
+    $ gcloud compute --project=qwiklabs-gcp-00-34317ee12d40 firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
+    $ gcloud compute --project=qwiklabs-gcp-00-34317ee12d40 firewall-rules create default-allow-https --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:443 --source-ranges=0.0.0.0/0 --target-tags=https-server
+# Set the password for the VM
+# Click on the name of your Windows VM to access the VM instance details.
+    $ gcloud compute reset-windows-password instance-2
+  # You will ge this propmt:
+  # Would you like to set or reset the password for [username] (Y/n)?
+  # Once confirmed, confirmation of password reset will look as follows:
+  # Resetting and retrieving password for [username] on [instance-name]
+  # Updated [https://www.googleapis.com/compute/v1/projects/project-name/zones/zone/instances/instance-name].
+  # ip_address: ip-address
+  # password:   password
+  # username:   username
+  # You may now connect to the instance using the provided username and password combination.
+
+# TASK 3: CREATE A CUSTOM VIRTUAL MACHINE
+    $ gcloud beta compute --project=qwiklabs-gcp-00-34317ee12d40 instances create instance-3 --zone=us-west1-b --machine-type=custom-6-32768 --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=956483595934-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --image=debian-10-buster-v20200910 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=instance-3 --no-shielded-secure-boot --no-shielded-vtpm --no-shielded-integrity-monitoring --reservation-affinity=any
+  # ssh your custom VM
+    $ gcloud beta compute ssh --zone "us-west1-b" "instance-3" --project "qwiklabs-gcp-00-34317ee12d40"
+  # To see information about unused and used memory and swap space on your custom VM:
+    $ free
+  # To see details about the RAM installed on your VM, run the following command:
+    $ sudo dmidecode -t 17
+  # To verify the number of processors, run the following command:
+    $ nproc
+  # To see details about the CPUs installed on your VM, run the following command:
+    $ lscpu
+  # To exit the SSH terminal, run the following command:
+    $ exit
