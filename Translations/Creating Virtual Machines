@@ -22,7 +22,18 @@
    // Set firewall rules to allow http and https traffic:
     $ gcloud compute --project=qwiklabs-gcp-00-34317ee12d40 firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
     $ gcloud compute --project=qwiklabs-gcp-00-34317ee12d40 firewall-rules create default-allow-https --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:443 --source-ranges=0.0.0.0/0 --target-tags=https-server
-
+  # Set the password for the VM
+  # Click on the name of your Windows VM to access the VM instance details.
+    $ gcloud compute reset-windows-password instance-2
+  # You will ge this propmt:
+  # Would you like to set or reset the password for [username] (Y/n)?
+  # Once confirmed, confirmation of password reset will look as follows:
+  # Resetting and retrieving password for [username] on [instance-name]
+  # Updated [https://www.googleapis.com/compute/v1/projects/project-name/zones/zone/instances/instance-name].
+  # ip_address: ip-address
+  # password:   password
+  # username:   username
+  # You may now connect to the instance using the provided username and password combinatio
 
 //TASK 3: CREATE A CUSTOM VIRTUAL MACHINE
     $ gcloud beta compute --project=qwiklabs-gcp-00-34317ee12d40 instances create instance-3 --zone=us-west1-b --machine-type=custom-6-32768 --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=956483595934-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --image=debian-10-buster-v20200910 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=instance-3 --no-shielded-secure-boot --no-shielded-vtpm --no-shielded-integrity-monitoring --reservation-affinity=any
